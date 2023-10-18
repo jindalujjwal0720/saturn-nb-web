@@ -7,7 +7,7 @@ const worker = () => {
     const originalConsoleLog = console.log;
     console.log = (...args) => {
       consoleLogs.push(args);
-      originalConsoleLog(...args);
+      consoleLogs.push(["\n"]);
     };
 
     /* eslint-disable no-eval */
@@ -42,7 +42,7 @@ const worker = () => {
 
     try {
       const result = executeCode(code, context);
-      context = { ...context, ...result };
+      // context = { ...context, ...result }; // bug fix - this was causing module imports error
       self.postMessage({
         output: formatOutput(result),
         error: null,
