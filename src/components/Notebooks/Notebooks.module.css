@@ -1,0 +1,145 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1024px;
+  padding: 2rem;
+  margin: 0 auto;
+  gap: 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.header .title {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.notebooks {
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
+
+.notebook {
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.notebook:hover {
+  background-color: var(--color-gray-100);
+}
+
+.notebook.head {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.05rem;
+  text-transform: uppercase;
+  background-color: var(--color-gray-200);
+  color: var(--color-text);
+  margin-bottom: -0.5rem;
+}
+
+.notebook.head:hover {
+  background-color: var(--color-gray-200);
+}
+
+.notebook .title {
+  outline: 0;
+  border: none;
+  background-color: transparent;
+}
+
+.notebook.head th {
+  padding: 0.8rem 0;
+}
+
+.notebook.head th:first-child {
+  padding-left: 0.6rem;
+  border-radius: 4px 0 0 4px;
+  text-align: start;
+}
+
+.notebook.head th:last-child {
+  padding-right: 0.6rem;
+  border-radius: 0 4px 4px 0;
+}
+
+.notebook td {
+  padding: 0.5rem 0;
+  text-align: center;
+}
+
+.notebook td:first-child {
+  padding-left: 0.5rem;
+  border-radius: 4px 0 0 4px;
+  text-align: start;
+}
+
+.notebook td:last-child {
+  padding-right: 0.5rem;
+  border-radius: 0 4px 4px 0;
+}
+
+button.addNotebook {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 4px;
+  outline: 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-secondary);
+  background-color: transparent;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button.addNotebook:hover {
+  background-color: var(--color-gray-100);
+}
+
+td.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+button.delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.2rem;
+  border: none;
+  outline: 0;
+  border-radius: 50%;
+  color: var(--color-error);
+  background-color: transparent;
+  transition: background-color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+button.delete:hover {
+  background-color: var(--color-gray-200);
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header {
+    margin-bottom: 0.5rem;
+  }
+}

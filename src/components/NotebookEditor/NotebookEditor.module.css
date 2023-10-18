@@ -1,0 +1,122 @@
+.wrapper {
+  background-color: var(--color-gray-200);
+  min-height: calc(100vh - 4rem);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1024px;
+  padding: 0.5rem 2rem;
+  margin: 0 auto;
+  min-height: calc(100vh - 4rem);
+}
+
+.tabbar {
+  display: flex;
+  align-items: center;
+}
+
+.tabbar .tab {
+  flex: 1;
+  max-width: 200px;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  outline: 0;
+  color: var(--color-text);
+  background-color: var(--color-gray-100);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid var(--color-text-light);
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-wrap: nowrap;
+}
+
+.tabbar .tab.newTab {
+  flex: 0;
+  border-radius: 8px;
+  width: 1.7rem;
+  height: 1.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  background-color: var(--color-gray-100);
+  margin: 0.3rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.tab > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tabbar .tab.active {
+  background-color: var(--color-text-light);
+  box-shadow: 2px 4px 8px var(--color-shadow);
+  padding-right: 0.8rem;
+}
+
+.tab .close {
+  display: flex;
+  font-size: 1rem;
+  color: var(--color-gray);
+  cursor: pointer;
+}
+
+.editor {
+  background-color: var(--color-text-light);
+  padding-top: 1rem;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--color-gray);
+}
+
+.dropdown {
+  position: absolute;
+  top: 110%;
+  left: 110%;
+  background-color: var(--color-text-light);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 400;
+  width: max-content;
+  padding: 0.3rem;
+  box-shadow: 0 0 16px var(--color-shadow);
+  z-index: 1;
+}
+
+.dropdownItem {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dropdownItem:hover {
+  background-color: var(--color-gray-100);
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+}
