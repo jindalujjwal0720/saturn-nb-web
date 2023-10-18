@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/saturn-nb-web/static/css/main.f8f094f4.css",
-    "main.js": "/saturn-nb-web/static/js/main.23ff487b.js",
+    "main.css": "/saturn-nb-web/static/css/main.9f74e162.css",
+    "main.js": "/saturn-nb-web/static/js/main.a71209bc.js",
     "static/js/787.d1d4a2c2.chunk.js": "/saturn-nb-web/static/js/787.d1d4a2c2.chunk.js",
     "index.html": "/saturn-nb-web/index.html",
-    "main.f8f094f4.css.map": "/saturn-nb-web/static/css/main.f8f094f4.css.map",
-    "main.23ff487b.js.map": "/saturn-nb-web/static/js/main.23ff487b.js.map",
+    "main.9f74e162.css.map": "/saturn-nb-web/static/css/main.9f74e162.css.map",
+    "main.a71209bc.js.map": "/saturn-nb-web/static/js/main.a71209bc.js.map",
     "787.d1d4a2c2.chunk.js.map": "/saturn-nb-web/static/js/787.d1d4a2c2.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f8f094f4.css",
-    "static/js/main.23ff487b.js"
+    "static/css/main.9f74e162.css",
+    "static/js/main.a71209bc.js"
   ]
 }
