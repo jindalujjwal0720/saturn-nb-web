@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.9f74e162.css",
-    "main.js": "/static/js/main.cbeebcb0.js",
-    "static/js/787.d1d4a2c2.chunk.js": "/static/js/787.d1d4a2c2.chunk.js",
-    "index.html": "/index.html",
-    "main.9f74e162.css.map": "/static/css/main.9f74e162.css.map",
-    "main.cbeebcb0.js.map": "/static/js/main.cbeebcb0.js.map",
-    "787.d1d4a2c2.chunk.js.map": "/static/js/787.d1d4a2c2.chunk.js.map"
+    "main.css": "/saturn-nb-web/static/css/main.0bfc5a51.css",
+    "main.js": "/saturn-nb-web/static/js/main.518eb441.js",
+    "static/js/787.d1d4a2c2.chunk.js": "/saturn-nb-web/static/js/787.d1d4a2c2.chunk.js",
+    "index.html": "/saturn-nb-web/index.html",
+    "main.0bfc5a51.css.map": "/saturn-nb-web/static/css/main.0bfc5a51.css.map",
+    "main.518eb441.js.map": "/saturn-nb-web/static/js/main.518eb441.js.map",
+    "787.d1d4a2c2.chunk.js.map": "/saturn-nb-web/static/js/787.d1d4a2c2.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.9f74e162.css",
-    "static/js/main.cbeebcb0.js"
+    "static/css/main.0bfc5a51.css",
+    "static/js/main.518eb441.js"
   ]
 }
