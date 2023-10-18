@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/saturn-nb/static/css/main.f8f094f4.css",
+    "main.js": "/saturn-nb/static/js/main.2837d87e.js",
+    "static/js/787.d1d4a2c2.chunk.js": "/saturn-nb/static/js/787.d1d4a2c2.chunk.js",
+    "index.html": "/saturn-nb/index.html",
+    "main.f8f094f4.css.map": "/saturn-nb/static/css/main.f8f094f4.css.map",
+    "main.2837d87e.js.map": "/saturn-nb/static/js/main.2837d87e.js.map",
+    "787.d1d4a2c2.chunk.js.map": "/saturn-nb/static/js/787.d1d4a2c2.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f8f094f4.css",
+    "static/js/main.2837d87e.js"
+  ]
+}
