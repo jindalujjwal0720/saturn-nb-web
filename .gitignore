@@ -9,7 +9,7 @@
 /coverage
 
 # production
-# /build
+/build
 
 # package files
 package-lock.json
