@@ -3,37 +3,45 @@ import styles from "./Markdown.module.css";
 
 const Markdown = ({ content }) => {
   const renderMarkdown = () => {
-    const lines = content.split("\n");
+    const h1Regex = /# (.*)\n/;
+    const h2Regex = /## (.*)\n/;
 
-    const h1Regex = /^# (.*)$/;
-    const h2Regex = /^## (.*)$/;
-    const pRegex = /^([^#].*)$/;
+    content = content.replace(h2Regex, "<h2>$1</h2>");
+    content = content.replace(h1Regex, "<h1>$1</h1>");
+
     const boldRegex = /\*(.*)\*/;
     const italicRegex = /_(.*)_/;
     const strikeThroughRegex = /~(.*)~/;
 
-    const renderLine = (line, index) => {
-      if (h2Regex.test(line)) {
-        return <h2 key={index}>{line.match(h2Regex)[1]}</h2>;
-      } else if (h1Regex.test(line)) {
-        return <h1 key={index}>{line.match(h1Regex)[1]}</h1>;
-      } else if (pRegex.test(line)) {
-        return <p key={index}>{line.match(pRegex)[1]}</p>;
-      } else if (boldRegex.test(line)) {
-        return <b key={index}>{line.match(boldRegex)[1]}</b>;
-      } else if (italicRegex.test(line)) {
-        return <i key={index}>{line.match(italicRegex)[1]}</i>;
-      } else if (strikeThroughRegex.test(line)) {
-        return <s key={index}>{line.match(strikeThroughRegex)[1]}</s>;
-      } else {
-        return <React.Fragment key={index}>{line}</React.Fragment>;
-      }
-    };
+    content = content.replace(boldRegex, "<b>$1</b>");
+    content = content.replace(italicRegex, "<i>$1</i>");
+    content = content.replace(strikeThroughRegex, "<s>$1</s>");
 
-    return lines.map((line, index) => renderLine(line, index));
+    content = content.replace(/(?:\r\n|\r|\n)/g, "<br>");
+
+    const lines = content.split("<br>");
+    let newContent = "";
+    lines.forEach((line) => {
+      if (line.startsWith("- ")) {
+        newContent += `<li>${line.substring(2)}</li>`;
+      } else {
+        newContent += `<p>${line}</p>`;
+      }
+    });
+    content = newContent;
+
+    const ulRegex = /<li>(.*)<\/li>/g;
+    content = content.replace(ulRegex, "<ul><li>$1</li></ul>");
+
+    return content;
   };
 
-  return <div className={styles.markdown}>{renderMarkdown(content)}</div>;
+  return (
+    <div
+      className={styles.markdown}
+      dangerouslySetInnerHTML={{ __html: renderMarkdown() }}
+    />
+  );
 };
 
 export default Markdown;
