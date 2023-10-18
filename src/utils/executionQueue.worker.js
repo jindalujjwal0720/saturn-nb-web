@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-globals */
+
 const worker = () => {
   const executeCode = (code, context) => {
     // Capture console.log output
@@ -8,7 +10,6 @@ const worker = () => {
       originalConsoleLog(...args);
     };
 
-    // Execute the provided JavaScript code
     /* eslint-disable no-eval */
     eval(code);
 
@@ -36,21 +37,25 @@ const worker = () => {
     return { message, stack };
   };
 
-  onmessage = (e) => {
+  self.onmessage = (e) => {
     let { code, context } = e.data;
 
     try {
       const result = executeCode(code, context);
       context = { ...context, ...result };
-      postMessage({ output: formatOutput(result), error: null, context });
+      self.postMessage({
+        output: formatOutput(result),
+        error: null,
+        context,
+      });
     } catch (error) {
-      postMessage({ output: null, error: formatError(error), context });
+      self.postMessage({
+        output: null,
+        error: formatError(error),
+        context,
+      });
     }
   };
 };
 
-let code = worker.toString();
-code = code.substring(code.indexOf("{") + 1, code.lastIndexOf("}"));
-const blob = new Blob([code], { type: "application/javascriptssky" });
-const workerScript = URL.createObjectURL(blob);
-export default workerScript;
+export default worker;

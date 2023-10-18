@@ -34,7 +34,7 @@ const CodeEditor = () => {
   return (
     <pre className={styles.codePre}>
       <Editor
-        value={activeCell.value.content || ""}
+        value={activeCell.value.content}
         onValueChange={handleCodeChange}
         highlight={highlightCode}
         padding={10}

@@ -9,6 +9,7 @@ import {
 } from "../../state/redux/notebook/notebookSlice";
 import { useSelector, useDispatch } from "react-redux";
 import Cell from "../Cell/Cell";
+import CellActionsDivider from "../CellActionsDivider/CellActionsDivider";
 
 const Notebook = () => {
   const dispatch = useDispatch();
@@ -63,9 +64,17 @@ const Notebook = () => {
       </div>
       <div className={styles.notebook}>
         <div className={styles.cells}>
-          {activeNotebook.cells.map((cell, index) => (
-            <Cell key={cell.id} cell={cell} index={index} />
-          ))}
+          {activeNotebook.cells.map((cell, index) => {
+            if (cell.id === activeCellId) {
+              return (
+                <React.Fragment key={cell.id}>
+                  <Cell cell={cell} index={index} />
+                  <CellActionsDivider />
+                </React.Fragment>
+              );
+            }
+            return <Cell cell={cell} index={index} key={cell.id} />;
+          })}
         </div>
       </div>
     </div>

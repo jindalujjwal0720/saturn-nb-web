@@ -13,6 +13,7 @@ import Markdown from "../Markdown/Markdown";
 import CodeViewer from "../CodeViewer/CodeViewer";
 import CodeEditor from "../CodeEditor/CodeEditor";
 import executionQueue from "../../utils/executionQueue";
+import { FaCheck } from "react-icons/fa";
 
 const Cell = ({ cell, index }) => {
   const dispatch = useDispatch();
@@ -96,6 +97,11 @@ const Cell = ({ cell, index }) => {
           >
             <div className={styles.ring}></div>
             <div className={styles.icon}>▶</div>
+          </div>
+        )}
+        {cell.value.type === "code" && cell.output && (
+          <div className={styles.outputTick}>
+            <FaCheck />
           </div>
         )}
       </div>

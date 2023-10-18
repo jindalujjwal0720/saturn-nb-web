@@ -1,10 +1,11 @@
 // executionQueue.js
-import workerScript from "./worker";
+import worker from "./executionQueue.worker.js";
+import WebWorker from "./web-worker.js";
 
 const executionQueue = {
   queue: [],
   isExecuting: false,
-  worker: new Worker(workerScript), // Create a dedicated web worker for execution
+  worker: new WebWorker(worker), // Create a dedicated web worker for execution
 
   addToQueue: (code, context, callback) => {
     executionQueue.queue.push({
