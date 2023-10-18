@@ -9,3 +9,7 @@
   color: var(--color-text);
   line-height: 1.5;
 }
+
+.codePre * {
+  word-wrap: break-word;
+}
