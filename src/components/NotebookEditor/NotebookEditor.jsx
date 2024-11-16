@@ -3,24 +3,27 @@ import styles from "./NotebookEditor.module.css";
 import {
   selectActiveNotebook,
   selectNotebooks,
+  selectOpenedNotebooks,
   setActiveNotebookId,
   createNotebook,
+  appendOpenedNotebook,
+  removeOpenedNotebook,
 } from "../../state/redux/notebook/notebookSlice";
 import { useSelector, useDispatch } from "react-redux";
 import Notebook from "../Notebook/Notebook";
+import { useNavigate } from "react-router-dom";
 
 const NotebookEditor = () => {
   const dispatch = useDispatch();
   const activeNotebook = useSelector(selectActiveNotebook);
   const notebooks = useSelector(selectNotebooks);
-  const [openedNotebooks, setOpenedNotebooks] = useState(
-    activeNotebook ? [activeNotebook] : []
-  );
+  const openedNotebooks = useSelector(selectOpenedNotebooks);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const [isPortrait, setIsPortrait] = useState(
     window.innerHeight > window.innerWidth
   );
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -46,35 +49,49 @@ const NotebookEditor = () => {
 
   const handleDropdownItemClick = (e, notebook) => {
     e.stopPropagation();
-    setOpenedNotebooks((prev) => [...new Set([...prev, notebook])]);
     toggleDropdown();
+    dispatch(appendOpenedNotebook(notebook));
     dispatch(setActiveNotebookId(notebook.id));
   };
 
-  const handleTabClick = (notebook) => {
+  const handleTabClick = (notebook) => (e) => {
+    e.stopPropagation();
     dispatch(setActiveNotebookId(notebook.id));
   };
 
-  const handleTabClose = () => {
+  const handleTabClose = (e) => {
+    e.stopPropagation();
+    dispatch(removeOpenedNotebook(activeNotebook));
+    // debugger;
+    dispatch(setActiveNotebookId(openedNotebooks[0].id));
     if (openedNotebooks.length === 1) {
-      setOpenedNotebooks([]);
-      dispatch(setActiveNotebookId(null));
-    } else {
-      setOpenedNotebooks((prev) =>
-        prev.filter((nb) => nb.id !== activeNotebook.id)
-      );
-      dispatch(setActiveNotebookId(openedNotebooks[0].id));
+      navigate("/");
     }
   };
 
   const handleCreateNotebook = (e) => {
     e.stopPropagation();
-    dispatch(createNotebook());
     toggleDropdown();
+    dispatch(createNotebook());
+    dispatch(setActiveNotebookId(notebooks[notebooks.length - 1].id));
   };
 
+  if (!activeNotebook && openedNotebooks.length > 0) {
+    dispatch(setActiveNotebookId(openedNotebooks[0].id));
+  }
+
+  if (!activeNotebook) {
+    return (
+      <div className={styles.wrapper}>
+        <div className={styles.container}>
+          <div className={styles.empty}>No notebook selected</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={styles.wrapper}>
+    <div key={activeNotebook.id} className={styles.wrapper}>
       <div className={styles.container}>
         <div className={styles.tabbar}>
           {openedNotebooks.map((nb, index) => (
@@ -85,7 +102,7 @@ const NotebookEditor = () => {
                 " " +
                 (nb.id === activeNotebook.id ? styles.active : "")
               }
-              onClick={() => handleTabClick(nb)}
+              onClick={handleTabClick(nb)}
             >
               <span>{nb.name}</span>
               {nb.id === activeNotebook.id && !isPortrait && (
@@ -128,7 +145,7 @@ const NotebookEditor = () => {
         </div>
         <div className={styles.editor}>
           {activeNotebook ? (
-            <Notebook />
+            <Notebook key={activeNotebook.id} />
           ) : (
             <div className={styles.empty}>No notebook selected</div>
           )}

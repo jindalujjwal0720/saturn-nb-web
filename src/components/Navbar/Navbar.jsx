@@ -6,16 +6,30 @@ import {
   saveNotebooks,
 } from "../../state/redux/notebook/notebookSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const saved = useSelector(selectSaved);
+  const navigate = useNavigate();
+
+  const handleNavigate = (e) => {
+    e.preventDefault();
+    if (!saved) {
+      if (!window.confirm("You have unsaved changes. Do you want to leave?")) {
+        return;
+      }
+    }
+    navigate("/");
+  };
 
   return (
     <div className={styles.navbar}>
       <div className={styles.container}>
         <div className={styles.left}>
-          <Logo />
+          <div onClick={handleNavigate}>
+            <Logo />
+          </div>
         </div>
         <div className={styles.right}>
           {saved ? (

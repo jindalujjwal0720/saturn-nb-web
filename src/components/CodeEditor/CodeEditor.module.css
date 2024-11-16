@@ -15,5 +15,4 @@
 .codePre textarea:focus {
   outline: 0;
   border: none;
-  height: auto;
 }

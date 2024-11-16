@@ -7,6 +7,7 @@ import {
   updateCellLoading,
   updateCellOutput,
   updateCellError,
+  updateCellExecutionTime,
 } from "../../state/redux/notebook/notebookSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Markdown from "../Markdown/Markdown";
@@ -39,31 +40,29 @@ const Cell = ({ cell, index }) => {
     dispatch(updateCellLoading({ id: cell.id, loading: true }));
     dispatch(updateCellOutput({ id: cell.id, output: "" }));
     dispatch(updateCellError({ id: cell.id, error: "" }));
+    dispatch(updateCellExecutionTime({ id: cell.id, executionTime: null }));
 
     executionQueue.addToQueue(
       cell.value.content,
       {},
-      ({ output, error, context }) => {
-        dispatch(updateCellOutput({ id: cell.id, output }));
+      ({ output, error, executionTime }) => {
+        dispatch(
+          updateCellOutput({ id: cell.id, output: output || "[no output]" })
+        );
         dispatch(updateCellError({ id: cell.id, error }));
         dispatch(updateCellLoading({ id: cell.id, loading: false }));
+        console.log("Execution time", executionTime);
+        dispatch(updateCellExecutionTime({ id: cell.id, executionTime }));
       }
     );
   };
-
-  useEffect(() => {
-    // Set initial height of textarea
-    const textarea = contentParentRef.current.querySelector("textarea");
-    if (!textarea) return;
-    textarea.style.height = `${6 + textarea.scrollHeight}px`;
-  }, []);
 
   useEffect(() => {
     // set event listener for tab key
     const textarea = contentParentRef.current.querySelector("textarea");
     if (!textarea) return;
     const handleTab = (e) => {
-      if (e.key === "Tab") {
+      if (e.key === "Tab" && activeCellId === cell.id) {
         e.preventDefault();
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
@@ -75,9 +74,15 @@ const Cell = ({ cell, index }) => {
       }
     };
 
-    document.addEventListener("keydown", handleTab);
-    return () => document.removeEventListener("keydown", handleTab);
-  }, []);
+    if (cell.value.type === "text") {
+      // Set initial height of textarea
+      textarea.style.height = `${6 + textarea.scrollHeight}px`;
+      textarea.addEventListener("keydown", handleTab);
+    }
+    return () => {
+      textarea.removeEventListener("keydown", handleTab);
+    };
+  }, [contentParentRef, cell, activeCellId]);
 
   return (
     <div
@@ -128,7 +133,7 @@ const Cell = ({ cell, index }) => {
         )}
         {cell.value.type === "code" && cell.output && (
           <div className={styles.output}>
-            <pre>{cell.output}</pre>
+            <pre dangerouslySetInnerHTML={{ __html: cell.output }}></pre>
           </div>
         )}
         {cell.value.type === "code" && cell.error && (

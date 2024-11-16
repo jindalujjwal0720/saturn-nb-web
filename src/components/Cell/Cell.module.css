@@ -46,6 +46,7 @@
   flex: 1;
   width: 100%;
   max-width: calc(100% - 100px);
+  min-height: 20px;
   height: 100%;
   padding: 0 5px;
   gap: 0.5rem;
@@ -129,7 +130,7 @@
 .error pre {
   margin: 0;
   flex: 1;
-  text-wrap: wrap;
+  white-space: pre-wrap;
 }
 
 .error {

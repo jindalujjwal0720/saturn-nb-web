@@ -7,6 +7,7 @@ export const generateNotebook = () => ({
   id: generateNotebookId(),
   name: "Untitled",
   cells: [],
+  opened: false,
 });
 
 export const generateCell = (type) => ({

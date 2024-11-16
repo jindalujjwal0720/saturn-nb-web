@@ -29,8 +29,9 @@ const notebookSlice = createSlice({
 
     createNotebook(state, action) {
       const notebook = generateNotebook();
+      const count = state.notebooks.length;
+      notebook.name = `${notebook.name} ${count + 1}`;
       state.notebooks.push(notebook);
-      state.activeNotebookId = notebook.id;
       state.saved = false;
     },
 
@@ -112,9 +113,7 @@ const notebookSlice = createSlice({
       const notebook = state.notebooks.find(
         (notebook) => notebook.id === state.activeNotebookId
       );
-      const cell = notebook.cells.find(
-        (cell) => cell.value.id === id
-      );
+      const cell = notebook.cells.find((cell) => cell.value.id === id);
       cell.output = output;
       state.saved = false;
     },
@@ -125,9 +124,7 @@ const notebookSlice = createSlice({
       const notebook = state.notebooks.find(
         (notebook) => notebook.id === state.activeNotebookId
       );
-      const cell = notebook.cells.find(
-        (cell) => cell.value.id === id
-      );
+      const cell = notebook.cells.find((cell) => cell.value.id === id);
       cell.loading = loading;
       state.saved = false;
     },
@@ -138,19 +135,41 @@ const notebookSlice = createSlice({
       const notebook = state.notebooks.find(
         (notebook) => notebook.id === state.activeNotebookId
       );
-      const cell = notebook.cells.find(
-        (cell) => cell.value.id === id
-      );
+      const cell = notebook.cells.find((cell) => cell.value.id === id);
       cell.error = error;
+      state.saved = false;
+    },
+
+    updateCellExecutionTime(state, action) {
+      if (!state.activeNotebookId) return;
+      const { executionTime, id } = action.payload;
+      const notebook = state.notebooks.find(
+        (notebook) => notebook.id === state.activeNotebookId
+      );
+      const cell = notebook.cells.find((cell) => cell.value.id === id);
+      cell.executionTime = executionTime;
       state.saved = false;
     },
 
     setActiveNotebookId(state, action) {
       state.activeNotebookId = action.payload;
+      console.log("Active notebook id", state.activeNotebookId);
     },
 
     setActiveCellId(state, action) {
       state.activeCellId = action.payload;
+    },
+
+    appendOpenedNotebook(state, action) {
+      const { id } = action.payload;
+      const notebook = state.notebooks.find((notebook) => notebook.id === id);
+      notebook.opened = true;
+    },
+
+    removeOpenedNotebook(state, action) {
+      const { id } = action.payload;
+      const notebook = state.notebooks.find((notebook) => notebook.id === id);
+      notebook.opened = false;
     },
   },
 });
@@ -175,6 +194,8 @@ export const selectNotebooksMetadata = (state) =>
     name: notebook.name,
     cellsCount: notebook.cells.length,
   }));
+export const selectOpenedNotebooks = (state) =>
+  state.notebook.notebooks.filter((notebook) => notebook.opened);
 
 export const {
   loadNotebooks,
@@ -190,5 +211,8 @@ export const {
   updateCellOutput,
   updateCellLoading,
   updateCellError,
+  updateCellExecutionTime,
+  appendOpenedNotebook,
+  removeOpenedNotebook,
 } = notebookSlice.actions;
 export default notebookSlice.reducer;

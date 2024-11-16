@@ -17,12 +17,11 @@ const CodeEditor = () => {
     dispatch(updateCell({ id: activeCell.id, content: code }));
   };
 
-  const highlightCode = () => {
+  const highlightCode = (value) => {
     let highlightedCode = "";
-    if (!activeCell) return;
-    if (!activeCell.value.content) return;
+    if (!value) return;
     try {
-      highlightedCode = hljs.highlight(activeCell.value.content, {
+      highlightedCode = hljs.highlight(value, {
         language: "javascript",
       }).value;
     } catch (err) {

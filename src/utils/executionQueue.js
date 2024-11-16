@@ -18,6 +18,11 @@ const executionQueue = {
     }
   },
 
+  reset: () => {
+    executionQueue.queue = [];
+    executionQueue.isExecuting = false;
+  },
+
   executeNext: () => {
     if (executionQueue.queue.length > 0) {
       executionQueue.isExecuting = true;
