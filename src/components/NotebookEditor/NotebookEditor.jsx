@@ -73,7 +73,6 @@ const NotebookEditor = () => {
     e.stopPropagation();
     toggleDropdown();
     dispatch(createNotebook());
-    dispatch(setActiveNotebookId(notebooks[notebooks.length - 1].id));
   };
 
   if (!activeNotebook && openedNotebooks.length > 0) {

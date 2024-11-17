@@ -19,6 +19,14 @@ const notebookSlice = createSlice({
       if (notebooks) {
         state.notebooks = JSON.parse(notebooks);
       }
+      state.notebooks = state.notebooks.map((notebook) => ({
+        ...notebook,
+        opened: false,
+        cells: notebook.cells.map((cell) => ({
+          ...cell,
+          loading: false,
+        })),
+      }));
       state.saved = true;
     },
 
@@ -31,7 +39,8 @@ const notebookSlice = createSlice({
       const notebook = generateNotebook();
       const count = state.notebooks.length;
       notebook.name = `${notebook.name} ${count + 1}`;
-      state.notebooks.push(notebook);
+      state.notebooks.push({ ...notebook, opened: true });
+      state.activeNotebookId = notebook.id;
       state.saved = false;
     },
 

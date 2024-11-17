@@ -6,6 +6,7 @@ import {
   createNotebook,
   updateNotebook,
   disposeNotebook,
+  appendOpenedNotebook,
 } from "../../state/redux/notebook/notebookSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { MdDelete } from "react-icons/md";
@@ -43,6 +44,7 @@ const Notebooks = () => {
 
   const handleNotebookClick = (notebook) => {
     dispatch(setActiveNotebookId(notebook.id));
+    dispatch(appendOpenedNotebook(notebook));
     navigate("/editor");
   };
 
