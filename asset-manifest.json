@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/saturn-nb-web/static/css/main.d904f2e7.css",
-    "main.js": "/saturn-nb-web/static/js/main.9ce56d7f.js",
+    "main.css": "/saturn-nb-web/static/css/main.3373b1f6.css",
+    "main.js": "/saturn-nb-web/static/js/main.386bdeb5.js",
     "index.html": "/saturn-nb-web/index.html",
-    "main.d904f2e7.css.map": "/saturn-nb-web/static/css/main.d904f2e7.css.map",
-    "main.9ce56d7f.js.map": "/saturn-nb-web/static/js/main.9ce56d7f.js.map"
+    "main.3373b1f6.css.map": "/saturn-nb-web/static/css/main.3373b1f6.css.map",
+    "main.386bdeb5.js.map": "/saturn-nb-web/static/js/main.386bdeb5.js.map"
   },
   "entrypoints": [
-    "static/css/main.d904f2e7.css",
-    "static/js/main.9ce56d7f.js"
+    "static/css/main.3373b1f6.css",
+    "static/js/main.386bdeb5.js"
   ]
 }
