@@ -11,6 +11,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import executionQueue from "../../utils/executionQueue";
 
 const Notebooks = () => {
   const navigate = useNavigate();
@@ -21,6 +22,9 @@ const Notebooks = () => {
   );
 
   React.useEffect(() => {
+    // reset workers on mount
+    executionQueue.reset();
+
     const handleResize = () => {
       setIsPortrait(window.innerHeight > window.innerWidth);
     };
@@ -29,8 +33,13 @@ const Notebooks = () => {
   }, []);
 
   const handleNameChange = (e, notebook) => {
-    if (e.target.value.length < 1) return;
     dispatch(updateNotebook({ id: notebook.id, name: e.target.value }));
+  };
+
+  const handleNameInputBlur = (e, notebook) => {
+    if (e.target.value.length < 1) {
+      dispatch(updateNotebook({ id: notebook.id, name: notebook.id }));
+    }
   };
 
   const handleDelete = (e, notebook) => {
@@ -75,6 +84,7 @@ const Notebooks = () => {
                   value={notebook.name}
                   onChange={(e) => handleNameChange(e, notebook)}
                   onClick={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleNameInputBlur(e, notebook)}
                 />
               </td>
               {!isPortrait && <td className={styles.id}>{notebook.id}</td>}

@@ -26,16 +26,18 @@ const NotebookEditor = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!activeNotebook && openedNotebooks.length > 0) {
+      dispatch(setActiveNotebookId(openedNotebooks[0].id));
+    }
+  }, [activeNotebook, openedNotebooks, dispatch]);
+
+  useEffect(() => {
     const handleResize = () => {
       setIsPortrait(window.innerHeight > window.innerWidth);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const toggleDropdown = () => {
-    setShowDropdown((prev) => !prev);
-  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -46,6 +48,10 @@ const NotebookEditor = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownRef]);
+
+  const toggleDropdown = () => {
+    setShowDropdown((prev) => !prev);
+  };
 
   const handleDropdownItemClick = (e, notebook) => {
     e.stopPropagation();
@@ -62,7 +68,6 @@ const NotebookEditor = () => {
   const handleTabClose = (e) => {
     e.stopPropagation();
     dispatch(removeOpenedNotebook(activeNotebook));
-    // debugger;
     dispatch(setActiveNotebookId(openedNotebooks[0].id));
     if (openedNotebooks.length === 1) {
       navigate("/");
@@ -74,10 +79,6 @@ const NotebookEditor = () => {
     toggleDropdown();
     dispatch(createNotebook());
   };
-
-  if (!activeNotebook && openedNotebooks.length > 0) {
-    dispatch(setActiveNotebookId(openedNotebooks[0].id));
-  }
 
   if (!activeNotebook) {
     return (

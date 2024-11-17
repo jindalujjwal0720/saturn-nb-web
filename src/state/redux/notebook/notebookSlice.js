@@ -21,10 +21,11 @@ const notebookSlice = createSlice({
       }
       state.notebooks = state.notebooks.map((notebook) => ({
         ...notebook,
-        opened: false,
         cells: notebook.cells.map((cell) => ({
           ...cell,
           loading: false,
+          executionTime: null,
+          executed: false,
         })),
       }));
       state.saved = true;
@@ -77,6 +78,8 @@ const notebookSlice = createSlice({
         loading: false,
         error: null,
         output: null,
+        executed: false,
+        executionTime: null,
       };
       if (state.activeCellId) {
         const index = notebook.cells.findIndex(
@@ -119,44 +122,125 @@ const notebookSlice = createSlice({
     updateCellOutput(state, action) {
       if (!state.activeNotebookId) return;
       const { output, id } = action.payload;
-      const notebook = state.notebooks.find(
-        (notebook) => notebook.id === state.activeNotebookId
-      );
-      const cell = notebook.cells.find((cell) => cell.value.id === id);
-      cell.output = output;
+      state.notebooks = state.notebooks.map((notebook) => {
+        if (notebook.id === state.activeNotebookId) {
+          notebook.cells = notebook.cells.map((cell) => {
+            if (cell.value.id === id) {
+              cell.output = output;
+            }
+            return cell;
+          });
+        }
+        return notebook;
+      });
+      state.saved = false;
+    },
+
+    appendCellOutput(state, action) {
+      if (!state.activeNotebookId) return;
+      const { output, id } = action.payload;
+      state.notebooks = state.notebooks.map((notebook) => {
+        if (notebook.id === state.activeNotebookId) {
+          notebook.cells = notebook.cells.map((cell) => {
+            if (cell.value.id === id) {
+              cell.output = cell.output ? `${cell.output}\n${output}` : output;
+            }
+            return cell;
+          });
+        }
+        return notebook;
+      });
       state.saved = false;
     },
 
     updateCellLoading(state, action) {
       if (!state.activeNotebookId) return;
       const { loading, id } = action.payload;
-      const notebook = state.notebooks.find(
-        (notebook) => notebook.id === state.activeNotebookId
-      );
-      const cell = notebook.cells.find((cell) => cell.value.id === id);
-      cell.loading = loading;
+      state.notebooks = state.notebooks.map((notebook) => {
+        if (notebook.id === state.activeNotebookId) {
+          notebook.cells = notebook.cells.map((cell) => {
+            if (cell.value.id === id) {
+              cell.loading = loading;
+            }
+            return cell;
+          });
+        }
+        return notebook;
+      });
       state.saved = false;
     },
 
     updateCellError(state, action) {
       if (!state.activeNotebookId) return;
       const { error, id } = action.payload;
-      const notebook = state.notebooks.find(
-        (notebook) => notebook.id === state.activeNotebookId
-      );
-      const cell = notebook.cells.find((cell) => cell.value.id === id);
-      cell.error = error;
+      state.notebooks = state.notebooks.map((notebook) => {
+        if (notebook.id === state.activeNotebookId) {
+          notebook.cells = notebook.cells.map((cell) => {
+            if (cell.value.id === id) {
+              cell.error = error;
+            }
+            return cell;
+          });
+        }
+        return notebook;
+      });
+      state.saved = false;
+    },
+
+    appendCellError(state, action) {
+      if (!state.activeNotebookId) return;
+      const { error, id } = action.payload;
+      state.notebooks = state.notebooks.map((notebook) => {
+        if (notebook.id === state.activeNotebookId) {
+          notebook.cells = notebook.cells.map((cell) => {
+            if (cell.value.id === id) {
+              const { message, stack } = error;
+              cell.error = cell.error
+                ? {
+                    message: `${cell.error.message}\n${message}`,
+                    stack: `${cell.error.stack}\n${stack}`,
+                  }
+                : error;
+            }
+            return cell;
+          });
+        }
+        return notebook;
+      });
       state.saved = false;
     },
 
     updateCellExecutionTime(state, action) {
       if (!state.activeNotebookId) return;
       const { executionTime, id } = action.payload;
-      const notebook = state.notebooks.find(
-        (notebook) => notebook.id === state.activeNotebookId
-      );
-      const cell = notebook.cells.find((cell) => cell.value.id === id);
-      cell.executionTime = executionTime;
+      state.notebooks = state.notebooks.map((notebook) => {
+        if (notebook.id === state.activeNotebookId) {
+          notebook.cells = notebook.cells.map((cell) => {
+            if (cell.value.id === id) {
+              cell.executionTime = executionTime;
+            }
+            return cell;
+          });
+        }
+        return notebook;
+      });
+      state.saved = false;
+    },
+
+    updateCellExecuted(state, action) {
+      if (!state.activeNotebookId) return;
+      const { executed, id } = action.payload;
+      state.notebooks = state.notebooks.map((notebook) => {
+        if (notebook.id === state.activeNotebookId) {
+          notebook.cells = notebook.cells.map((cell) => {
+            if (cell.value.id === id) {
+              cell.executed = executed ? true : false;
+            }
+            return cell;
+          });
+        }
+        return notebook;
+      });
       state.saved = false;
     },
 
@@ -173,6 +257,11 @@ const notebookSlice = createSlice({
       const { id } = action.payload;
       const notebook = state.notebooks.find((notebook) => notebook.id === id);
       notebook.opened = true;
+      notebook.cells = notebook.cells.map((cell) => ({
+        ...cell,
+        loading: false,
+      }));
+      localStorage.setItem("notebooks", JSON.stringify(state.notebooks));
     },
 
     removeOpenedNotebook(state, action) {
@@ -218,9 +307,12 @@ export const {
   setActiveNotebookId,
   setActiveCellId,
   updateCellOutput,
+  appendCellOutput,
   updateCellLoading,
   updateCellError,
+  appendCellError,
   updateCellExecutionTime,
+  updateCellExecuted,
   appendOpenedNotebook,
   removeOpenedNotebook,
 } = notebookSlice.actions;

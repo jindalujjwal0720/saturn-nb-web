@@ -1,110 +1,95 @@
 /* eslint-disable no-restricted-globals */
 
 const worker = () => {
-  const executeCode = (code, context) => {
-    let index = 0;
+  const executeCode = (code, id) => {
     // Capture console.log output
-    const consoleLogs = [];
-    const originalConsoleLog = console.log;
-    console.log = (args) => {
-      consoleLogs.push({
-        index: index++,
-        args,
-        type: "log",
+    console.__customLog__ = (...args) => {
+      self.postMessage({
+        event: "code:log",
+        message: args.join(" "),
+        context: { id },
       });
     };
 
     // Capture console.error output
-    const consoleErrors = [];
-    const originalConsoleError = console.error;
-    console.error = (args) => {
-      consoleErrors.push({
-        index: index++,
-        args: args,
-        type: "error",
+    console.__customError__ = (...args) => {
+      self.postMessage({
+        event: "code:error",
+        message: args.join(" "),
+        context: { id },
       });
     };
+
+    // Replace console.log in the code with the custom log
+    code = code.replace(/console.log/g, "console.__customLog__");
+    code = code.replace(/console.error/g, "console.__customError__");
+
+    // Replace function declarations with arrow functions without the const keyword
+    // e.g. function foo() { return 1; } => foo = () => { return 1; };
+    function replaceFunctionDeclarations(code) {
+      // Regular expression to match function declarations
+      const functionRegex =
+        /function\s+([a-zA-Z0-9_$]+)\s*\(([^)]*)\)\s*\{([^}]*)\}/g;
+
+      // Replace each function declaration with an arrow function assignment
+      const transformedCode = code.replace(
+        functionRegex,
+        (match, functionName, params, body) => {
+          // Create the arrow function format
+          const arrowFunction = `${functionName} = (${params}) => {${body}};`;
+          return arrowFunction;
+        }
+      );
+
+      return transformedCode;
+    }
+    code = replaceFunctionDeclarations(code);
 
     // Execute the code
     const startTime = performance.now();
-    let endTime = performance.now();
     try {
-      // eslint-disable-next-line no-new-func
-      new Function(...Object.keys(context), code)(...Object.values(context));
-      endTime = performance.now();
+      // eslint-disable-next-line no-eval
+      eval(code);
     } catch (error) {
-      endTime = performance.now();
-      consoleErrors.push({
-        index: index++,
-        args: error,
-        type: "error",
-      });
+      throw error;
     }
+    const endTime = performance.now();
 
-    // Restore the original functions
-    console.log = originalConsoleLog;
-    console.error = originalConsoleError;
-
-    // Update the state with console output
-    return {
-      consoleLogs,
-      consoleErrors,
-      length: index,
-      executionTime: endTime - startTime,
-    };
-  };
-
-  const formatOutput = (output) => {
-    console.log(output);
-
-    const { consoleLogs, consoleErrors } = output;
-    // arrange console output in order
-    let consoleOutput = [...consoleLogs, ...consoleErrors].sort(
-      (a, b) => a.index - b.index
-    );
-
-    console.log(consoleOutput);
-
-    // remove the index from the output and generate the html
-    consoleOutput = consoleOutput.map((log) => {
-      if (log.type === "error") {
-        return `<span style="color: red;">${log.args}</span>`;
-      } else {
-        return `<span>${log.args}</span>`;
-      }
-    });
-    const executionDetails = `<br/><span style="color: grey;">Ran in ${output.executionTime.toFixed(
-      2
-    )}ms</span><br/>`;
-    consoleOutput.push(executionDetails);
-
-    // return the output as html
-    return consoleOutput.join("\n");
+    // Return the execution time
+    return { executionTime: endTime - startTime };
   };
 
   const formatError = (error) => {
-    const { message, stack } = error;
-    return { message, stack };
+    if (!error) return null;
+    if (typeof error === "string") return { message: error };
+    return {
+      message: error.message,
+      stack: error.stack,
+    };
   };
 
   self.onmessage = (e) => {
-    let { code, context } = e.data;
+    let { event } = e.data;
 
-    try {
-      const result = executeCode(code, context);
-      // update the context without object spread
-      context = Object.assign({}, context, result);
-      self.postMessage({
-        output: formatOutput(result),
-        error: null,
-        context,
-      });
-    } catch (error) {
-      self.postMessage({
-        output: null,
-        error: formatError(error),
-        context,
-      });
+    if (event === "code:execute") {
+      try {
+        const { code } = e.data;
+        const result = executeCode(code);
+        self.postMessage({
+          event: "code:executed",
+          executionTime: result.executionTime,
+        });
+      } catch (error) {
+        // console.error(error);
+        self.postMessage({
+          event: "code:error",
+          message: formatError(error),
+        });
+        self.postMessage({
+          event: "code:executed",
+          executionTime: null,
+        });
+      }
     }
   };
 };

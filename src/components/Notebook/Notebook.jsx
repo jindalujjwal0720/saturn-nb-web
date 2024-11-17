@@ -17,8 +17,13 @@ const Notebook = () => {
   const activeCellId = useSelector(selectActiveCellId);
 
   const handleNameChange = (e, notebook) => {
-    if (e.target.value.length < 1) return;
     dispatch(updateNotebook({ id: notebook.id, name: e.target.value }));
+  };
+
+  const handleNameInputBlur = (e, notebook) => {
+    if (e.target.value.length < 1) {
+      dispatch(updateNotebook({ id: notebook.id, name: notebook.id }));
+    }
   };
 
   const handleAddCode = () => {
@@ -44,6 +49,7 @@ const Notebook = () => {
           className={styles.title}
           value={activeNotebook.name}
           onChange={(e) => handleNameChange(e, activeNotebook)}
+          onBlur={(e) => handleNameInputBlur(e, activeNotebook)}
         />
         <div className={styles.id}>ID: {activeNotebook.id}</div>
         <div className={styles.actions}>
